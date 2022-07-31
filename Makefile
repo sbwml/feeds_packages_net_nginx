@@ -405,11 +405,11 @@ define Prepare/nginx-headers-more
 endef
 
 define Download/nginx-brotli
-  VERSION:=e505dce68acc190cc5a1e780a3b0275e39f160ca
+  VERSION:=6e975bcb015f62e1f303054897783355e2a877dc
   SUBDIR:=nginx-brotli
   FILE:=ngx-brotli-module-$$(VERSION).tar.xz
   URL:=https://github.com/google/ngx_brotli.git
-  MIRROR_HASH:=04847f11ef808fed50f44b2af0ef3abf59ff0ffc06dfc7394d9ab51d53fef31f
+  MIRROR_HASH:=e4e262f87e48fe0ab6fdad395dba409182d05a3be88c9f2a892ca6f26158665e
   PROTO:=git
 endef
 
