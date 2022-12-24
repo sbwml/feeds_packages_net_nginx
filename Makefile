@@ -391,11 +391,11 @@ endef
 Package/nginx-all-module/prerm = $(Package/nginx-ssl/prerm)
 
 define Download/nginx-headers-more
-  VERSION:=a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
+  VERSION:=33b646d69f39604d71342ee241633975aa122b35
   SUBDIR:=nginx-headers-more
   FILE:=headers-more-nginx-module-$$(VERSION).tar.xz
   URL:=https://github.com/openresty/headers-more-nginx-module.git
-  MIRROR_HASH:=ce0b9996ecb2cff790831644d6ab1adc087aa2771d77d3931c06246d11bc59fd
+  MIRROR_HASH:=8cc5b5aa61610cb73b25f246d1e942d242d3363046c786e0c5ba32e40c4f3774
   PROTO:=git
 endef
 
@@ -461,11 +461,11 @@ define Prepare/nginx-naxsi
 endef
 
 define Download/lua-nginx
-  VERSION:=e94f2e5d64daa45ff396e262d8dab8e56f5f10e0
+  VERSION:=3f4005fa879fc2ed329275c47e238bff1f8b890e
   SUBDIR:=lua-nginx
   FILE:=lua-nginx-module-$$(VERSION).tar.xz
   URL:=https://github.com/openresty/lua-nginx-module.git
-  MIRROR_HASH:=27729921964f066d97e99c263da153b34622a2f4b811114e4c3ee61c6fc71395
+  MIRROR_HASH:=20e5567cf6b0005a840295b5ed8ff63a2fa67d7a1c455561fe4807824fe88885
   PROTO:=git
 endef
 
