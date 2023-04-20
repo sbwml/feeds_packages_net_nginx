@@ -461,11 +461,11 @@ define Prepare/nginx-naxsi
 endef
 
 define Download/lua-nginx
-  VERSION:=3f4005fa879fc2ed329275c47e238bff1f8b890e
+  VERSION:=16de4bea620b6281f948b0d65341e31b2c90d597
   SUBDIR:=lua-nginx
   FILE:=lua-nginx-module-$$(VERSION).tar.xz
   URL:=https://github.com/openresty/lua-nginx-module.git
-  MIRROR_HASH:=20e5567cf6b0005a840295b5ed8ff63a2fa67d7a1c455561fe4807824fe88885
+  MIRROR_HASH:=7c6c5c735483c94b28acb740e62ef68898d53ecfa35a685bb56b0e59ebe6a779
   PROTO:=git
 endef
 
