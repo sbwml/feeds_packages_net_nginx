@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx
-PKG_VERSION:=1.24.0
+PKG_VERSION:=1.25.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=nginx-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://nginx.org/download/
-PKG_HASH:=77a2541637b92a621e3ee76776c8b7b40cf6d707e69ba53a940283e30ff2f55d
+PKG_HASH:=f09071ac46e0ea3adc0008ef0baca229fc6b4be4533baef9bbbfba7de29a8602
 
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de> \
 				Ansuel Smith <ansuelsmth@gmail.com>
@@ -295,7 +295,9 @@ else
   CONFIG_NGINX_UBUS:=y
   ADDITIONAL_MODULES += --with-ipv6 --with-http_stub_status_module --with-http_flv_module \
 	--with-http_dav_module \
-	--with-http_auth_request_module --with-http_v2_module --with-http_realip_module \
+	--with-http_auth_request_module \
+	--with-http_v2_module --with-http_v3_module \
+	--with-http_realip_module \
 	--with-http_secure_link_module --with-http_sub_module \
 	--with-stream --with-stream_ssl_module --with-stream_ssl_preread_module \
 	--with-openssl-opt='enable-ktls' \
