@@ -294,12 +294,14 @@ else
   CONFIG_NGINX_LUA:=y
   CONFIG_NGINX_DAV:=y
   CONFIG_NGINX_UBUS:=y
-  ADDITIONAL_MODULES += --with-ipv6 --with-http_stub_status_module --with-http_flv_module \
+  ADDITIONAL_MODULES += --with-file-aio --with-threads --with-ipv6 \
+	--with-http_stub_status_module --with-http_flv_module \
 	--with-http_dav_module \
 	--with-http_auth_request_module \
 	--with-http_v2_module --with-http_v3_module \
 	--with-http_realip_module \
 	--with-http_secure_link_module --with-http_sub_module \
+	--with-http_random_index_module \
 	--with-stream --with-stream_ssl_module --with-stream_ssl_preread_module \
 	--with-openssl-opt='enable-ktls' \
 	--add-module=$(PKG_BUILD_DIR)/nginx-headers-more \
