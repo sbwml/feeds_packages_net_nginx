@@ -116,6 +116,7 @@ define Package/nginx-all-module
   EXTRA_DEPENDS:=nginx-ssl-util (>=1.5-1) (<2)
   VARIANT:=all-module
   PROVIDES += nginx-ssl
+  CONFLICTS:=nginx-full
 endef
 
 Package/nginx-all-module/description = $(Package/nginx/description) \
