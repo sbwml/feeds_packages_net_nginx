@@ -4,7 +4,7 @@
  $NGX_INCLUDE_INTTYPES_H
  $NGX_INCLUDE_AUTO_CONFIG_H
  
-+char object_code_block[] = {
++volatile char object_code_block[] = {
 +	'\n', 'e', '4', 'V', 'A',
 +	'0', 'x', ('0' + sizeof($ngx_type)),
 +	'Y', '3', 'p', 'M', '\n'
@@ -16,7 +16,7 @@
      return 0;
  }
  
-@@ -40,7 +46,7 @@ eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&1"
+@@ -40,7 +46,7 @@ eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&
  
  
  if [ -x $NGX_AUTOTEST ]; then
