@@ -27,8 +27,6 @@
      ngx_feature_incs="#include <stdio.h>
  #define var(dummy, args...)  sprintf(args)"
      ngx_feature_path=
-diff --git a/auto/cc/name b/auto/cc/name
-index ded93f5..dbef8d1 100644
 --- a/auto/cc/name
 +++ b/auto/cc/name
 @@ -7,7 +7,7 @@ if [ "$NGX_PLATFORM" != win32 ]; then
@@ -40,8 +38,6 @@ index ded93f5..dbef8d1 100644
      ngx_feature_incs=
      ngx_feature_path=
      ngx_feature_libs=
-diff --git a/auto/os/linux b/auto/os/linux
-index 74b5870..b54a5fe 100644
 --- a/auto/os/linux
 +++ b/auto/os/linux
 @@ -36,7 +36,7 @@ fi
@@ -53,7 +49,7 @@ index 74b5870..b54a5fe 100644
  ngx_feature_incs="#include <sys/epoll.h>"
  ngx_feature_path=
  ngx_feature_libs=
-@@ -135,7 +135,7 @@ ngx_feature_test="int fd; struct stat sb;
+@@ -135,7 +135,7 @@ ngx_feature_test="int fd; struct stat sb
  CC_AUX_FLAGS="$cc_aux_flags -D_GNU_SOURCE"
  ngx_feature="sendfile()"
  ngx_feature_name="NGX_HAVE_SENDFILE"
@@ -71,7 +67,7 @@ index 74b5870..b54a5fe 100644
  ngx_feature_incs="#include <sys/sendfile.h>
                    #include <errno.h>"
  ngx_feature_path=
-@@ -174,7 +174,7 @@ ngx_include="sys/prctl.h"; . auto/include
+@@ -174,7 +174,7 @@ ngx_include="sys/prctl.h"; . auto/includ
  
  ngx_feature="prctl(PR_SET_DUMPABLE)"
  ngx_feature_name="NGX_HAVE_PR_SET_DUMPABLE"
@@ -80,11 +76,9 @@ index 74b5870..b54a5fe 100644
  ngx_feature_incs="#include <sys/prctl.h>"
  ngx_feature_path=
  ngx_feature_libs=
-diff --git a/auto/unix b/auto/unix
-index 8671019..72ab21c 100644
 --- a/auto/unix
 +++ b/auto/unix
-@@ -805,7 +805,7 @@ ngx_feature_test="void *p; p = memalign(4096, 4096);
+@@ -853,7 +853,7 @@ ngx_feature_test="void *p; p = memalign(
  
  ngx_feature="mmap(MAP_ANON|MAP_SHARED)"
  ngx_feature_name="NGX_HAVE_MAP_ANON"
@@ -93,7 +87,7 @@ index 8671019..72ab21c 100644
  ngx_feature_incs="#include <sys/mman.h>"
  ngx_feature_path=
  ngx_feature_libs=
-@@ -818,7 +818,7 @@ ngx_feature_test="void *p;
+@@ -866,7 +866,7 @@ ngx_feature_test="void *p;
  
  ngx_feature='mmap("/dev/zero", MAP_SHARED)'
  ngx_feature_name="NGX_HAVE_MAP_DEVZERO"
@@ -102,7 +96,7 @@ index 8671019..72ab21c 100644
  ngx_feature_incs="#include <sys/mman.h>
                    #include <sys/stat.h>
                    #include <fcntl.h>"
-@@ -833,7 +833,7 @@ ngx_feature_test='void *p; int  fd;
+@@ -881,7 +881,7 @@ ngx_feature_test='void *p; int  fd;
  
  ngx_feature="System V shared memory"
  ngx_feature_name="NGX_HAVE_SYSVSHM"
@@ -111,7 +105,7 @@ index 8671019..72ab21c 100644
  ngx_feature_incs="#include <sys/ipc.h>
                    #include <sys/shm.h>"
  ngx_feature_path=
-@@ -847,7 +847,7 @@ ngx_feature_test="int  id;
+@@ -895,7 +895,7 @@ ngx_feature_test="int  id;
  
  ngx_feature="POSIX semaphores"
  ngx_feature_name="NGX_HAVE_POSIX_SEM"
