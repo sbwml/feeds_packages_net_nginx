@@ -221,6 +221,13 @@ config NGINX_HTTP_BROTLI
 		Add support for brotli compression module.
 	default n
 
+config NGINX_HTTP_ZSTD
+	bool
+	prompt "Enable Zstandard compression module"
+	help
+		Add support for Zstandard compression module.
+	default n
+
 config NGINX_STREAM_CORE_MODULE
 	bool
 	prompt "Enable stream support"

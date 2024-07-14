@@ -64,6 +64,7 @@ PKG_CONFIG_DEPENDS := \
 	CONFIG_NGINX_HTTP_REAL_IP \
 	CONFIG_NGINX_HTTP_SECURE_LINK \
 	CONFIG_NGINX_HTTP_BROTLI \
+	CONFIG_NGINX_HTTP_ZSTD \
 	CONFIG_NGINX_HEADERS_MORE \
 	CONFIG_NGINX_STREAM_CORE_MODULE \
 	CONFIG_NGINX_STREAM_SSL_MODULE \
@@ -99,7 +100,8 @@ define Package/nginx-ssl
   DEPENDS+= +NGINX_PCRE:libpcre2 \
 	+NGINX_PCRE:nginx-ssl-util +!NGINX_PCRE:nginx-ssl-util-nopcre \
 	+NGINX_HTTP_GZIP:zlib +NGINX_LUA:liblua +NGINX_DAV:libxml2 \
-	+NGINX_UBUS:libubus +NGINX_UBUS:libblobmsg-json +NGINX_UBUS:libjson-c
+	+NGINX_UBUS:libubus +NGINX_UBUS:libblobmsg-json +NGINX_UBUS:libjson-c \
+	+NGINX_HTTP_ZSTD:libzstd
   EXTRA_DEPENDS:=nginx-ssl-util$(if $(CONFIG_NGINX_PCRE),,-nopcre) (>=1.5-1) (<2)
   CONFLICTS:=nginx-all-module
 endef
@@ -112,7 +114,7 @@ define Package/nginx-all-module
   $(Package/nginx/default)
   TITLE += with ALL module selected
   DEPENDS+=+libpcre2 +nginx-ssl-util +zlib +liblua +libxml2 +libubus \
-	+libblobmsg-json +libjson-c
+	+libblobmsg-json +libjson-c +libzstd
   EXTRA_DEPENDS:=nginx-ssl-util (>=1.5-1) (<2)
   VARIANT:=all-module
   PROVIDES += nginx-ssl
@@ -279,6 +281,9 @@ ifneq ($(BUILD_VARIANT),all-module)
   ifeq ($(CONFIG_NGINX_HTTP_BROTLI),y)
     ADDITIONAL_MODULES += --add-module=$(PKG_BUILD_DIR)/nginx-brotli
   endif
+  ifeq ($(CONFIG_NGINX_HTTP_ZSTD),y)
+    ADDITIONAL_MODULES += --add-module=$(PKG_BUILD_DIR)/nginx-zstd
+  endif
   ifeq ($(CONFIG_NGINX_RTMP_MODULE),y)
     ADDITIONAL_MODULES += --add-module=$(PKG_BUILD_DIR)/nginx-rtmp
   endif
@@ -288,6 +293,7 @@ ifneq ($(BUILD_VARIANT),all-module)
 else
   CONFIG_NGINX_HEADERS_MORE:=y
   CONFIG_NGINX_HTTP_BROTLI:=y
+  CONFIG_NGINX_HTTP_ZSTD:=y
   CONFIG_NGINX_RTMP_MODULE:=y
   CONFIG_NGINX_TS_MODULE:=y
   CONFIG_NGINX_NAXSI:=y
@@ -307,8 +313,11 @@ else
 	--add-module=$(PKG_BUILD_DIR)/nginx-headers-more \
 	--add-module=$(PKG_BUILD_DIR)/nginx-naxsi/naxsi_src \
 	--add-module=$(PKG_BUILD_DIR)/nginx-dav-ext-module \
-	--add-module=$(PKG_BUILD_DIR)/nginx-brotli --add-module=$(PKG_BUILD_DIR)/nginx-rtmp \
-	--add-module=$(PKG_BUILD_DIR)/nginx-ts --add-module=$(PKG_BUILD_DIR)/nginx-ubus-module
+	--add-module=$(PKG_BUILD_DIR)/nginx-brotli \
+	--add-module=$(PKG_BUILD_DIR)/nginx-zstd \
+	--add-module=$(PKG_BUILD_DIR)/nginx-rtmp \
+	--add-module=$(PKG_BUILD_DIR)/nginx-ts \
+	--add-module=$(PKG_BUILD_DIR)/nginx-ubus-module
   config_files += koi-utf koi-win win-utf fastcgi_params uwsgi_params fastcgi.conf
 endif
 
@@ -328,13 +337,17 @@ define Package/nginx-mod-luci/description
  Support file for LuCI in nginx. Include custom nginx configuration, autostart script for uwsgi.
 endef
 
-
 TARGET_CFLAGS += -fvisibility=hidden -ffunction-sections -fdata-sections -DNGX_LUA_NO_BY_LUA_BLOCK
 TARGET_LDFLAGS += -Wl,--gc-sections
 
 ifeq ($(CONFIG_NGINX_LUA),y)
   CONFIGURE_VARS += LUA_INC=$(STAGING_DIR)/usr/include \
 					LUA_LIB=$(STAGING_DIR)/usr/lib
+endif
+
+ifeq ($(CONFIG_NGINX_HTTP_ZSTD),y)
+  CONFIGURE_VARS += ZSTD_INC=$(STAGING_DIR)/usr/include \
+					ZSTD_LIB=$(STAGING_DIR)/usr/lib
 endif
 
 CONFIGURE_VARS += CONFIG_BIG_ENDIAN=$(CONFIG_BIG_ENDIAN)
@@ -420,6 +433,20 @@ endef
 
 define Prepare/nginx-brotli
 	$(eval $(Download/nginx-brotli))
+	xzcat $(DL_DIR)/$(FILE) | tar -C $(PKG_BUILD_DIR) $(TAR_OPTIONS)
+endef
+
+define Download/nginx-zstd
+  VERSION:=f4ba115e0b0eaecde545e5f37db6aa18917d8f4b
+  SUBDIR:=nginx-zstd
+  FILE:=ngx-zstd-module-$$(VERSION).tar.xz
+  URL:=https://github.com/tokers/zstd-nginx-module.git
+  MIRROR_HASH:=fd08f8a939446734d1d10ab1977cefa4a00f2ecb9a08fd4f1ae8fee448b361ec
+  PROTO:=git
+endef
+
+define Prepare/nginx-zstd
+	$(eval $(Download/nginx-zstd))
 	xzcat $(DL_DIR)/$(FILE) | tar -C $(PKG_BUILD_DIR) $(TAR_OPTIONS)
 endef
 
@@ -519,6 +546,9 @@ endif
 ifneq "$(or $(CONFIG_NGINX_RTMP_MODULE),$(QUILT))" ""
 	$(call PatchDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/rtmp-nginx,rtmp-nginx/)
 endif
+ifneq "$(or $(CONFIG_NGINX_HTTP_ZSTD),$(QUILT))" ""
+	$(call PatchDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/nginx-zstd,nginx-zstd/)
+endif
 	$(if $(QUILT),touch $(PKG_BUILD_DIR)/.quilt_used)
 endef
 
@@ -527,6 +557,7 @@ define Quilt/Refresh/Package
 	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/dav-nginx,dav-nginx/)
 	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/lua-nginx,lua-nginx/)
 	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/rtmp-nginx,rtmp-nginx/)
+	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/nginx-zstd,nginx-zstd/)
 endef
 
 define Build/Prepare
@@ -547,6 +578,11 @@ endif
 ifeq ($(CONFIG_NGINX_HTTP_BROTLI),y)
   $(eval $(call Download,nginx-brotli))
   $(Prepare/nginx-brotli)
+endif
+
+ifeq ($(CONFIG_NGINX_HTTP_ZSTD),y)
+  $(eval $(call Download,nginx-zstd))
+  $(Prepare/nginx-zstd)
 endif
 
 ifeq ($(CONFIG_NGINX_HEADERS_MORE),y)
