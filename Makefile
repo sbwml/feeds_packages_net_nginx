@@ -131,7 +131,7 @@ endef
 config_files=mime.types
 
 define Package/nginx/conffiles
-/etc/nginx/
+/etc/nginx/conf.d
 endef
 
 Package/nginx-ssl/conffiles = $(Package/nginx/conffiles)
