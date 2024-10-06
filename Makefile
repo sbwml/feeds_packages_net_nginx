@@ -445,6 +445,7 @@ CONFIGURE_ARGS += \
 	--http-fastcgi-temp-path=/var/lib/nginx/fastcgi \
 	--with-cc="$(TARGET_CC)" \
 	--with-ld-opt="$(TARGET_LDFLAGS)" \
+	--with-openssl-opt=enable-ktls \
 	--without-http_upstream_zone_module \
 	--with-compat \
 	--with-http_ssl_module \
