@@ -108,7 +108,7 @@ define Package/nginx/description
 endef
 
 define Package/nginx/conffiles
-/etc/nginx/
+/etc/nginx/conf.d
 endef
 
 define Package/nginx-ssl
