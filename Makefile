@@ -35,6 +35,7 @@ PKG_MOD_EXTRA := \
 	dav-ext \
 	naxsi \
 	brotli \
+	zstd \
 	headers-more \
 	ts \
 	ubus
@@ -116,7 +117,8 @@ define Package/nginx-ssl
   VARIANT:=ssl
   DEPENDS+= +NGINX_PCRE:libpcre2 \
 	+NGINX_PCRE:nginx-ssl-util +!NGINX_PCRE:nginx-ssl-util-nopcre \
-	+NGINX_HTTP_GZIP:zlib +NGINX_DAV:libxml2
+	+NGINX_HTTP_GZIP:zlib +NGINX_DAV:libxml2 \
+	$(if $(CONFIG_PACKAGE_nginx-mod-zstd),+libzstd)
   EXTRA_DEPENDS:=nginx-ssl-util$(if $(CONFIG_NGINX_PCRE),,-nopcre) (>=1.5-1) (<2)
   CONFLICTS:=nginx-full
 endef
@@ -164,7 +166,8 @@ endef
 define Package/nginx-full
   $(Package/nginx/default)
   TITLE += with ALL config selected
-  DEPENDS+=+libpcre2 +nginx-ssl-util +zlib +libxml2
+  DEPENDS+=+libpcre2 +nginx-ssl-util +zlib +libxml2 \
+	$(if $(CONFIG_PACKAGE_nginx-mod-zstd),+libzstd)
   EXTRA_DEPENDS:=nginx-ssl-util (>=1.5-1) (<2)
   VARIANT:=full
   PROVIDES += nginx-ssl
@@ -260,6 +263,14 @@ define Download/nginx-mod-brotli
   VERSION:=25f86f0bac1101b6512135eac5f93c49c63609e3
   URL:=https://github.com/google/ngx_brotli.git
   MIRROR_HASH:=680c56be79e7327cb8df271646119333d2f6965a3472bc7043721625fa4488f5
+  PROTO:=git
+endef
+
+define Download/nginx-mod-zstd
+  SOURCE_DATE:=2024-04-22
+  VERSION:=f4ba115e0b0eaecde545e5f37db6aa18917d8f4b
+  URL:=https://github.com/tokers/zstd-nginx-module.git
+  MIRROR_HASH:=fd08f8a939446734d1d10ab1977cefa4a00f2ecb9a08fd4f1ae8fee448b361ec
   PROTO:=git
 endef
 
@@ -413,6 +424,11 @@ ifneq ($(CONFIG_PACKAGE_nginx-mod-lua),)
 					LUAJIT_LIB=$(STAGING_DIR)/usr/lib
 endif
 
+ifneq ($(CONFIG_PACKAGE_nginx-mod-zstd),)
+  CONFIGURE_VARS += ZSTD_INC=$(STAGING_DIR)/usr/include \
+					ZSTD_LIB=$(STAGING_DIR)/usr/lib
+endif
+
 CONFIGURE_VARS += CONFIG_BIG_ENDIAN=$(CONFIG_BIG_ENDIAN)
 
 CONFIGURE_ARGS += \
@@ -497,6 +513,8 @@ $(eval $(call BuildModule,ts,,ngx_http_ts, \
 	Add support for MPEG-TS Live Module module.))
 $(eval $(call BuildModule,brotli,,ngx_http_brotli_filter ngx_http_brotli_static, \
 	Add support for brotli compression module.))
+$(eval $(call BuildModule,zstd,,ngx_http_zstd_filter ngx_http_zstd_static, \
+	Add support for zstd compression module.))
 $(eval $(call BuildModule,naxsi,,ngx_http_naxsi, \
 	Enable NAXSI module.))
 $(eval $(call BuildModule,geoip2,+@NGINX_STREAM_CORE_MODULE +nginx-mod-stream +libmaxminddb,ngx_http_geoip2 ngx_stream_geoip2, \
