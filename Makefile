@@ -97,7 +97,7 @@ define Package/nginx/default
   SUBMENU:=Web Servers/Proxies
   TITLE:=Nginx web server
   URL:=http://nginx.org/
-  DEPENDS:=+libopenssl +libpthread
+  DEPENDS:=+libopenssl +libpthread +libzstd
   # TODO: add PROVIDES when removing nginx
   # PROVIDES:=nginx
 endef
@@ -117,8 +117,7 @@ define Package/nginx-ssl
   VARIANT:=ssl
   DEPENDS+= +NGINX_PCRE:libpcre2 \
 	+NGINX_PCRE:nginx-ssl-util +!NGINX_PCRE:nginx-ssl-util-nopcre \
-	+NGINX_HTTP_GZIP:zlib +NGINX_DAV:libxml2 \
-	$(if $(CONFIG_PACKAGE_nginx-mod-zstd),+libzstd)
+	+NGINX_HTTP_GZIP:zlib +NGINX_DAV:libxml2
   EXTRA_DEPENDS:=nginx-ssl-util$(if $(CONFIG_NGINX_PCRE),,-nopcre) (>=1.5-1) (<2)
   CONFLICTS:=nginx-full
 endef
@@ -166,8 +165,7 @@ endef
 define Package/nginx-full
   $(Package/nginx/default)
   TITLE += with ALL config selected
-  DEPENDS+=+libpcre2 +nginx-ssl-util +zlib +libxml2 \
-	$(if $(CONFIG_PACKAGE_nginx-mod-zstd),+libzstd)
+  DEPENDS+=+libpcre2 +nginx-ssl-util +zlib +libxml2
   EXTRA_DEPENDS:=nginx-ssl-util (>=1.5-1) (<2)
   VARIANT:=full
   PROVIDES += nginx-ssl
