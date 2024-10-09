@@ -430,6 +430,7 @@ endif
 CONFIGURE_VARS += CONFIG_BIG_ENDIAN=$(CONFIG_BIG_ENDIAN)
 
 CONFIGURE_ARGS += \
+	--build=OpenWrt \
 	--crossbuild=Linux::$(ARCH) \
 	--prefix=/usr \
 	--conf-path=/etc/nginx/nginx.conf \
