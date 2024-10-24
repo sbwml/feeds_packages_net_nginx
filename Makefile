@@ -98,7 +98,7 @@ define Package/nginx/default
   SUBMENU:=Web Servers/Proxies
   TITLE:=Nginx web server
   URL:=http://nginx.org/
-  DEPENDS:=+libopenssl +libpthread +libzstd
+  DEPENDS:=+libopenssl +libpthread
   # TODO: add PROVIDES when removing nginx
   # PROVIDES:=nginx
 endef
@@ -118,7 +118,8 @@ define Package/nginx-ssl
   VARIANT:=ssl
   DEPENDS+= +NGINX_PCRE:libpcre2 \
 	+NGINX_PCRE:nginx-ssl-util +!NGINX_PCRE:nginx-ssl-util-nopcre \
-	+NGINX_HTTP_GZIP:zlib +NGINX_DAV:libxml2
+	+NGINX_HTTP_GZIP:zlib +NGINX_DAV:libxml2 \
+	$(if $(CONFIG_PACKAGE_nginx-mod-zstd),+libzstd)
   EXTRA_DEPENDS:=nginx-ssl-util$(if $(CONFIG_NGINX_PCRE),,-nopcre) (>=1.5-1) (<2)
   CONFLICTS:=nginx-full
 endef
@@ -166,7 +167,8 @@ endef
 define Package/nginx-full
   $(Package/nginx/default)
   TITLE += with ALL config selected
-  DEPENDS+=+libpcre2 +nginx-ssl-util +zlib +libxml2
+  DEPENDS+=+libpcre2 +nginx-ssl-util +zlib +libxml2 \
+	$(if $(CONFIG_PACKAGE_nginx-mod-zstd),+libzstd)
   EXTRA_DEPENDS:=nginx-ssl-util (>=1.5-1) (<2)
   VARIANT:=full
   PROVIDES += nginx-ssl
@@ -498,7 +500,8 @@ CONFIGURE_ARGS += \
 	$(if $(call IsEnabled,NGINX_STREAM_REAL_IP),--with-stream_realip_module) \
 	$(if $(CONFIG_PACKAGE_nginx-mod-naxsi),--add-dynamic-module=$(PKG_BUILD_DIR)/nginx-mod-naxsi/naxsi_src) \
 	$(if $(CONFIG_PACKAGE_nginx-mod-njs),--add-dynamic-module=$(PKG_BUILD_DIR)/nginx-mod-njs/nginx) \
-	$(foreach m,$(filter-out lua-resty-core lua-resty-lrucache naxsi njs,$(PKG_MOD_EXTRA)), \
+	$(if $(CONFIG_PACKAGE_nginx-mod-zstd),--add-dynamic-module=$(PKG_BUILD_DIR)/nginx-mod-zstd) \
+	$(foreach m,$(filter-out lua-resty-core lua-resty-lrucache naxsi njs zstd,$(PKG_MOD_EXTRA)), \
 		$(if $(CONFIG_PACKAGE_nginx-mod-$(m)),--add-dynamic-module=$(PKG_BUILD_DIR)/nginx-mod-$(m)))
 
 $(eval $(call BuildPackage,nginx-ssl))
@@ -522,7 +525,7 @@ $(eval $(call BuildModule,ts,,ngx_http_ts, \
 	Add support for MPEG-TS Live Module module.))
 $(eval $(call BuildModule,brotli,,ngx_http_brotli_filter ngx_http_brotli_static, \
 	Add support for brotli compression module.))
-$(eval $(call BuildModule,zstd,,ngx_http_zstd_filter ngx_http_zstd_static, \
+$(eval $(call BuildModule,zstd,+libzstd,ngx_http_zstd_filter ngx_http_zstd_static, \
 	Add support for zstd compression module.))
 $(eval $(call BuildModule,naxsi,,ngx_http_naxsi, \
 	Enable NAXSI module.))
