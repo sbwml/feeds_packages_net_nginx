@@ -413,6 +413,14 @@ define BuildModule
   endef
 
   define Package/nginx-mod-$(1)/install
+	$(if $(filter $(1),brotli),
+	  $(INSTALL_DIR) $$(1)/etc/nginx/conf.d
+	  $(INSTALL_CONF) ./files-luci-support/brotli.locations $$(1)/etc/nginx/conf.d/
+	)
+	$(if $(filter $(1),zstd),
+	  $(INSTALL_DIR) $$(1)/etc/nginx/conf.d
+	  $(INSTALL_CONF) ./files-luci-support/zstd.locations $$(1)/etc/nginx/conf.d/
+	)
 	$(INSTALL_DIR) $$(1)/usr/lib/nginx/modules
 	$(INSTALL_DIR) $$(1)/etc/nginx/module.d
 	$(foreach m,$(3),
