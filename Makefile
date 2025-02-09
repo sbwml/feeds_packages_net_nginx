@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx
-PKG_VERSION:=1.26.2
+PKG_VERSION:=1.26.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=nginx-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://nginx.org/download/
-PKG_HASH:=627fe086209bba80a2853a0add9d958d7ebbdffa1a8467a5784c9a6b4f03d738
+PKG_HASH:=69ee2b237744036e61d24b836668aad3040dda461fe6f570f1787eab570c75aa
 
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de> \
 				Christian Marangi <ansuelsmth@gmail.com>
@@ -119,7 +119,7 @@ define Package/nginx-ssl
 	+NGINX_PCRE:nginx-ssl-util +!NGINX_PCRE:nginx-ssl-util-nopcre \
 	+NGINX_HTTP_GZIP:zlib +NGINX_DAV:libxml2 \
 	$(if $(CONFIG_PACKAGE_nginx-mod-zstd),+libzstd)
-  EXTRA_DEPENDS:=nginx-ssl-util$(if $(CONFIG_NGINX_PCRE),,-nopcre) (>=1.5-1)
+  EXTRA_DEPENDS:=nginx-ssl-util$(if $(CONFIG_NGINX_PCRE),,-nopcre) (>=1.5-r1)
   CONFLICTS:=nginx-full
 endef
 
@@ -168,7 +168,7 @@ define Package/nginx-full
   TITLE += with ALL config selected
   DEPENDS+=+libpcre2 +nginx-ssl-util +zlib +libxml2 \
 	$(if $(CONFIG_PACKAGE_nginx-mod-zstd),+libzstd)
-  EXTRA_DEPENDS:=nginx-ssl-util (>=1.5-1)
+  EXTRA_DEPENDS:=nginx-ssl-util (>=1.5-r1)
   VARIANT:=full
   PROVIDES += nginx-ssl
 endef
