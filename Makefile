@@ -269,7 +269,7 @@ define Download/nginx-mod-zstd
   SOURCE_DATE:=2024-04-22
   VERSION:=f4ba115e0b0eaecde545e5f37db6aa18917d8f4b
   URL:=https://github.com/tokers/zstd-nginx-module.git
-  MIRROR_HASH:=fd08f8a939446734d1d10ab1977cefa4a00f2ecb9a08fd4f1ae8fee448b361ec
+  MIRROR_HASH:=4cc0dbce6459bd7b16346629aec408c9c14173e001e9d795e7406819172086f1
   PROTO:=git
 endef
 
